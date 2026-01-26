@@ -1,0 +1,182 @@
+name: Infrastructure Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/infrastructure-deploy.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+
+env:
+  AWS_REGION: us-east-1
+  TF_VERSION: 1.5.0
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive terraform/
+
+      - name: Initialize Terraform
+        working-directory: terraform
+        run: terraform init -upgrade
+
+      - name: Validate Terraform
+        working-directory: terraform
+        run: terraform validate
+
+      - name: Run TFLint
+        uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: latest
+
+      - name: Init TFLint
+        run: cd terraform && tflint --init
+
+      - name: Run TFLint checks
+        run: cd terraform && tflint -f compact || true
+
+  plan:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Initialize Terraform
+        working-directory: terraform
+        run: terraform init
+
+      - name: Create terraform.tfvars
+        working-directory: terraform
+        run: |
+          cp terraform.tfvars.example terraform.tfvars
+          sed -i 's|YOUR_ECR_REPOSITORY_URL|${{ secrets.ECR_REPOSITORY_URL }}|g' terraform.tfvars
+          sed -i 's|YourSecureRedisToken|${{ secrets.REDIS_AUTH_TOKEN }}|g' terraform.tfvars
+
+      - name: Terraform plan
+        id: plan
+        working-directory: terraform
+        run: terraform plan -no-color -out=tfplan
+
+      - name: Add plan to PR
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('terraform/tfplan', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Terraform Plan\n\`\`\`\n${plan}\n\`\`\``
+            });
+
+  apply:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Initialize Terraform
+        working-directory: terraform
+        run: terraform init
+
+      - name: Create terraform.tfvars
+        working-directory: terraform
+        run: |
+          cp terraform.tfvars.example terraform.tfvars
+          sed -i 's|YOUR_ECR_REPOSITORY_URL|${{ secrets.ECR_REPOSITORY_URL }}|g' terraform.tfvars
+          sed -i 's|YourSecureRedisToken|${{ secrets.REDIS_AUTH_TOKEN }}|g' terraform.tfvars
+
+      - name: Terraform apply
+        working-directory: terraform
+        run: terraform apply -auto-approve -no-color
+
+      - name: Get outputs
+        id: outputs
+        working-directory: terraform
+        run: |
+          echo "alb_dns=$(terraform output -raw load_balancer_dns)" >> $GITHUB_OUTPUT
+          echo "s3_bucket=$(terraform output -raw s3_bucket_name)" >> $GITHUB_OUTPUT
+          echo "cloudfront_domain=$(terraform output -raw cloudfront_domain_name)" >> $GITHUB_OUTPUT
+          echo "ecr_repo=$(terraform output -raw ecr_repository_url)" >> $GITHUB_OUTPUT
+
+      - name: Save outputs to file
+        run: |
+          cat > infrastructure-outputs.json <<EOF
+          {
+            "load_balancer_dns": "${{ steps.outputs.outputs.alb_dns }}",
+            "s3_bucket": "${{ steps.outputs.outputs.s3_bucket }}",
+            "cloudfront_domain": "${{ steps.outputs.outputs.cloudfront_domain }}",
+            "ecr_repository": "${{ steps.outputs.outputs.ecr_repo }}"
+          }
+          EOF
+
+      - name: Upload infrastructure outputs
+        uses: actions/upload-artifact@v3
+        with:
+          name: infrastructure-outputs
+          path: infrastructure-outputs.json
+
+      - name: Send notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "Infrastructure deployment ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Infrastructure Deployment* ${{ job.status }}\n*ALB DNS:* ${{ steps.outputs.outputs.alb_dns }}\n*CloudFront:* ${{ steps.outputs.outputs.cloudfront_domain }}"
+                  }
+                }
+              ]
+            }

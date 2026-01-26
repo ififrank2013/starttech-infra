@@ -1,0 +1,127 @@
+{
+  "AlarmDefinitions": [
+    {
+      "AlarmName": "HighCPUUtilization",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 70,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "AlarmActions": [
+        "arn:aws:autoscaling:region:account:scalingPolicy"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when EC2 CPU utilization exceeds 70%"
+    },
+    {
+      "AlarmName": "LowCPUUtilization",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 30,
+      "ComparisonOperator": "LessThanThreshold",
+      "AlarmActions": [
+        "arn:aws:autoscaling:region:account:scalingPolicy"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when EC2 CPU utilization drops below 30%"
+    },
+    {
+      "AlarmName": "UnhealthyTargets",
+      "MetricName": "UnHealthyHostCount",
+      "Namespace": "AWS/ApplicationELB",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 1,
+      "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:region:account:topic"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when ALB has unhealthy targets"
+    },
+    {
+      "AlarmName": "HighLatency",
+      "MetricName": "TargetResponseTime",
+      "Namespace": "AWS/ApplicationELB",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 1000,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Unit": "Milliseconds",
+      "AlarmActions": [
+        "arn:aws:sns:region:account:topic"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when ALB response time exceeds 1 second"
+    },
+    {
+      "AlarmName": "RedisEvictions",
+      "MetricName": "Evictions",
+      "Namespace": "AWS/ElastiCache",
+      "Statistic": "Sum",
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 0,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:region:account:topic"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when Redis keys are being evicted due to memory pressure"
+    },
+    {
+      "AlarmName": "HighMemoryUsage",
+      "MetricName": "DatabaseMemoryUsagePercentage",
+      "Namespace": "AWS/ElastiCache",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 85,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Unit": "Percent",
+      "AlarmActions": [
+        "arn:aws:sns:region:account:topic"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when Redis memory usage exceeds 85%"
+    },
+    {
+      "AlarmName": "HighErrorRate",
+      "MetricName": "HTTPCode_Target_5XX_Count",
+      "Namespace": "AWS/ApplicationELB",
+      "Statistic": "Sum",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 10,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:region:account:topic"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when 5XX error count is high"
+    },
+    {
+      "AlarmName": "DiskSpaceWarning",
+      "MetricName": "DiskSpaceUsage",
+      "Namespace": "Custom/Application",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 80,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Unit": "Percent",
+      "AlarmActions": [
+        "arn:aws:sns:region:account:topic"
+      ],
+      "TreatMissingData": "notBreaching",
+      "Description": "Alert when disk space usage exceeds 80%"
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+# CloudWatch Logs Insights Pre-built Queries
+# Copy and paste these queries directly into CloudWatch Logs Insights console
+
+# ============================================================================
+# 1. ERROR ANALYSIS QUERIES
+# ============================================================================
+
+# Query 1.1: Top errors by type in the last 1 hour
+fields @timestamp, @message, @logStream, error_type
+| filter @message like /ERROR|error|Error/
+| stats count() as error_count by error_type
+| sort error_count desc
+| limit 20
+
+# Query 1.2: Error rate over time
+fields @timestamp
+| filter @message like /ERROR|error|Error/
+| stats count() as error_count by bin(5m)
+| sort @timestamp desc
+
+# Query 1.3: Errors by service
+fields @timestamp, @logStream, @message, service
+| filter @message like /ERROR|error|Error/
+| stats count() as error_count by service, @logStream
+| sort error_count desc
+
+# Query 1.4: P99 response times
+fields @duration
+| filter @duration > 0
+| stats pct(@duration, 99) as p99_latency, pct(@duration, 95) as p95_latency, pct(@duration, 50) as p50_latency
+| sort p99_latency desc
+
+# ============================================================================
+# 2. PERFORMANCE QUERIES
+# ============================================================================
+
+# Query 2.1: Slow requests (>1000ms)
+fields @timestamp, @duration, @message, http_method, request_path, status_code
+| filter @duration > 1000
+| stats count() as slow_request_count by request_path, http_method
+| sort slow_request_count desc
+
+# Query 2.2: Request throughput per minute
+fields @timestamp
+| stats count() as request_count by bin(1m)
+| sort @timestamp desc
+| limit 60
+
+# Query 2.3: Status code distribution
+fields status_code, @timestamp
+| stats count() as status_count by status_code
+| sort status_count desc
+
+# Query 2.4: API endpoint latencies
+fields request_path, @duration
+| filter @duration > 0 and ispresent(request_path)
+| stats count() as call_count, avg(@duration) as avg_latency, max(@duration) as max_latency by request_path
+| sort avg_latency desc
+
+# ============================================================================
+# 3. APPLICATION HEALTH QUERIES
+# ============================================================================
+
+# Query 3.1: Database connection issues
+fields @timestamp, @message, @logStream
+| filter @message like /database|connection|postgres|mongo|redis/i
+| stats count() as db_issues by @logStream
+| sort db_issues desc
+
+# Query 3.2: Authentication failures
+fields @timestamp, @message, user_id, @logStream
+| filter @message like /authentication|auth|login|unauthorized/i
+| stats count() as auth_failures by @logStream
+| sort auth_failures desc
+
+# Query 3.3: Memory and resource warnings
+fields @timestamp, @message, @logStream, severity
+| filter @message like /memory|heap|GC|garbage|resource/i
+| stats count() as resource_issues by severity, @logStream
+| sort resource_issues desc
+
+# Query 3.4: Dependency/external service failures
+fields @timestamp, @message, service_name
+| filter @message like /timeout|circuit breaker|service unavailable|upstream/i
+| stats count() as dep_failures by service_name
+| sort dep_failures desc
+
+# ============================================================================
+# 4. DEPLOYMENT AND RELEASE QUERIES
+# ============================================================================
+
+# Query 4.1: Errors after deployment
+fields @timestamp, @message, deployment_id
+| filter ispresent(deployment_id)
+| stats count() as post_deploy_errors by deployment_id
+| sort @timestamp desc
+
+# Query 4.2: Container restart frequency
+fields @timestamp, container_id, container_name
+| filter @message like /restart|killed|exited/i
+| stats count() as restart_count by container_name, container_id
+| sort restart_count desc
+
+# Query 4.3: Traffic anomalies after deployment
+fields @timestamp, request_count
+| stats count() as requests by bin(1m)
+| sort @timestamp desc
+| limit 120
+
+# ============================================================================
+# 5. SECURITY AND COMPLIANCE QUERIES
+# ============================================================================
+
+# Query 5.1: Failed login attempts
+fields @timestamp, user_id, source_ip, @logStream
+| filter @message like /failed|login|invalid|denied/i
+| stats count() as failed_attempts by source_ip, user_id
+| sort failed_attempts desc
+
+# Query 5.2: Suspicious activity detection
+fields @timestamp, @message, source_ip, user_id, action
+| filter @message like /suspicious|anomaly|attack|injection|sql/i
+| sort @timestamp desc
+
+# Query 5.3: Access control violations
+fields @timestamp, user_id, resource, action, source_ip
+| filter @message like /forbidden|denied|unauthorized|permission/i
+| stats count() as violations by user_id, action
+| sort violations desc
+
+# ============================================================================
+# 6. INFRASTRUCTURE QUERIES
+# ============================================================================
+
+# Query 6.1: Container and pod status
+fields @timestamp, container_name, status, @message
+| filter ispresent(container_name)
+| stats count() as status_count by container_name, status
+| sort status_count desc
+
+# Query 6.2: Network issues
+fields @timestamp, @message, @logStream
+| filter @message like /timeout|connection refused|network|socket/i
+| stats count() as network_issues by @logStream
+| sort network_issues desc
+
+# Query 6.3: Resource utilization trends
+fields @timestamp, cpu_usage, memory_usage, disk_usage
+| filter ispresent(cpu_usage)
+| stats avg(cpu_usage) as avg_cpu, max(cpu_usage) as max_cpu, avg(memory_usage) as avg_mem by bin(5m)
+| sort @timestamp desc
+
+# ============================================================================
+# 7. BUSINESS METRICS QUERIES
+# ============================================================================
+
+# Query 7.1: User activity summary
+fields @timestamp, user_id, action, @duration
+| filter ispresent(user_id)
+| stats count() as action_count, avg(@duration) as avg_action_duration by user_id, action
+| sort action_count desc
+| limit 100
+
+# Query 7.2: Conversion funnel analysis
+fields @timestamp, user_id, step_name, success
+| filter ispresent(step_name)
+| stats count() as step_count, sum(success) as successful_count by step_name
+| sort step_count desc
+
+# Query 7.3: Payment processing metrics
+fields @timestamp, transaction_id, amount, status, @duration
+| filter @message like /payment|transaction|checkout/i
+| stats count() as transaction_count, avg(amount) as avg_amount, sum(amount) as total_amount by status
+| sort transaction_count desc
+
+# ============================================================================
+# 8. DEBUGGING AND TROUBLESHOOTING QUERIES
+# ============================================================================
+
+# Query 8.1: Trace specific request by ID
+fields @timestamp, @message, @logStream, trace_id, user_id, @duration
+| filter trace_id = "YOUR_TRACE_ID_HERE"
+| sort @timestamp asc
+
+# Query 8.2: Find logs from specific service instance
+fields @timestamp, @message, @logStream, container_name
+| filter container_name = "YOUR_CONTAINER_NAME_HERE"
+| sort @timestamp desc
+| limit 1000
+
+# Query 8.3: Analyze error pattern for specific user
+fields @timestamp, @message, user_id, @logStream
+| filter user_id = "YOUR_USER_ID_HERE"
+| filter @message like /ERROR|error/
+| sort @timestamp desc
+
+# Query 8.4: Compare metrics between time periods
+fields @timestamp, @duration, @message
+| filter ispresent(@duration)
+| stats count() as request_count, avg(@duration) as avg_latency by bin(1h)
+| sort @timestamp desc
+
+# ============================================================================
+# 9. COST ANALYSIS QUERIES
+# ============================================================================
+
+# Query 9.1: High-volume requests that could indicate abuse
+fields @timestamp, source_ip, request_count
+| filter request_count > 1000
+| stats count() as high_volume_instances by source_ip
+| sort high_volume_instances desc
+
+# Query 9.2: Inefficient queries or operations
+fields @timestamp, @duration, operation_name, @message
+| filter @duration > 5000
+| stats count() as slow_operation_count, max(@duration) as max_duration by operation_name
+| sort slow_operation_count desc
+
+# ============================================================================
+# 10. CUSTOM APPLICATION QUERIES
+# ============================================================================
+
+# Query 10.1: Cache hit/miss ratio
+fields @timestamp, cache_hit, cache_miss
+| stats sum(cache_hit) as total_hits, sum(cache_miss) as total_misses
+| fields total_hits, total_misses, (total_hits / (total_hits + total_misses)) * 100 as hit_ratio
+
+# Query 10.2: Database query performance
+fields @timestamp, query_type, @duration, rows_affected
+| filter ispresent(query_type)
+| stats count() as query_count, avg(@duration) as avg_time, max(@duration) as max_time by query_type
+| sort avg_time desc
+
+# Query 10.3: API gateway latency breakdown
+fields @timestamp, gateway_latency, backend_latency, total_latency
+| filter ispresent(gateway_latency)
+| stats avg(gateway_latency) as avg_gateway, avg(backend_latency) as avg_backend, avg(total_latency) as avg_total

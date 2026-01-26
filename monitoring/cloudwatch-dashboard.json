@@ -1,0 +1,171 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/EC2",
+            "CPUUtilization",
+            {
+              "stat": "Average",
+              "label": "EC2 CPU Utilization"
+            }
+          ],
+          [
+            "AWS/ApplicationELB",
+            "TargetResponseTime",
+            {
+              "stat": "Average",
+              "label": "ALB Response Time"
+            }
+          ],
+          [
+            "AWS/ApplicationELB",
+            "HealthyHostCount",
+            {
+              "stat": "Average",
+              "label": "Healthy Targets"
+            }
+          ],
+          [
+            "AWS/ApplicationELB",
+            "UnHealthyHostCount",
+            {
+              "stat": "Sum",
+              "label": "Unhealthy Targets"
+            }
+          ],
+          [
+            "AWS/ElastiCache",
+            "CPUUtilization",
+            {
+              "stat": "Average",
+              "label": "Redis CPU"
+            }
+          ]
+        ],
+        "period": 300,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "Application Performance Metrics",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/EC2",
+            "NetworkIn",
+            {
+              "stat": "Sum",
+              "label": "Network In"
+            }
+          ],
+          [
+            "AWS/EC2",
+            "NetworkOut",
+            {
+              "stat": "Sum",
+              "label": "Network Out"
+            }
+          ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Network Traffic",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "log",
+      "properties": {
+        "query": "fields @timestamp, @message, @logStream | stats count() by @logStream",
+        "region": "us-east-1",
+        "title": "Application Logs Summary"
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/ApplicationELB",
+            "RequestCount",
+            {
+              "stat": "Sum",
+              "label": "Request Count"
+            }
+          ],
+          [
+            "AWS/ApplicationELB",
+            "HTTPCode_Target_5XX_Count",
+            {
+              "stat": "Sum",
+              "label": "5XX Errors"
+            }
+          ],
+          [
+            "AWS/ApplicationELB",
+            "HTTPCode_Target_4XX_Count",
+            {
+              "stat": "Sum",
+              "label": "4XX Errors"
+            }
+          ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Request Metrics"
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/ElastiCache",
+            "Evictions",
+            {
+              "stat": "Sum",
+              "label": "Evictions"
+            }
+          ],
+          [
+            "AWS/ElastiCache",
+            "DatabaseMemoryUsagePercentage",
+            {
+              "stat": "Average",
+              "label": "Memory Usage %"
+            }
+          ],
+          [
+            "AWS/ElastiCache",
+            "EngineCPUUtilization",
+            {
+              "stat": "Average",
+              "label": "CPU Utilization"
+            }
+          ]
+        ],
+        "period": 300,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "Redis/ElastiCache Metrics"
+      }
+    }
+  ]
+}

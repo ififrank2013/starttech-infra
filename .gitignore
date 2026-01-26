@@ -1,0 +1,74 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+.terraform/
+.terraform.lock.hcl
+.terraformrc
+terraform.rc
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.iml
+
+# Logs
+*.log
+logs/
+*.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# AWS
+credentials
+.aws/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+build/
+dist/
+*.pem
+
+# Node modules (if any scripts use npm)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Docker
+.docker/
+.dockerignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+
+# Ruby
+.bundle/
+
+# General
+.DS_Store
+*.bak
+*.backup
+*.swp
+core
