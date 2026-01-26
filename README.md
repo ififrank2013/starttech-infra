@@ -2,7 +2,7 @@
 
 This repository contains all Infrastructure as Code (IaC) and deployment automation for the StartTech application. It provides production-grade infrastructure on AWS with comprehensive monitoring and observability.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -14,7 +14,7 @@ This repository contains all Infrastructure as Code (IaC) and deployment automat
 - [Monitoring](#monitoring)
 - [Troubleshooting](#troubleshooting)
 
-## 🏗️ Overview
+## Overview
 
 This infrastructure-as-code repository enables:
 
@@ -37,7 +37,7 @@ This infrastructure-as-code repository enables:
 ✅ Automated health checks  
 ✅ Zero-downtime deployments  
 
-## 🎯 Architecture
+## Architecture
 
 ### Infrastructure Stack
 
@@ -86,7 +86,7 @@ This infrastructure-as-code repository enables:
 | **CloudWatch** | Monitoring | Logs, metrics, dashboards, alarms |
 | **IAM** | Access Control | Role-based permissions |
 
-## 📦 Prerequisites
+## Prerequisites
 
 ### Required Tools
 
@@ -107,7 +107,7 @@ This infrastructure-as-code repository enables:
 - **AWS SSO** configured (for CLI authentication)
 - **Docker** (for ECR image building)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Setup AWS Credentials
 
@@ -153,7 +153,7 @@ aws ec2 describe-instances --region us-east-1
 aws elbv2 describe-load-balancers --region us-east-1
 ```
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 starttech-infra/
@@ -194,7 +194,7 @@ starttech-infra/
 
 ```
 
-## 🏗️ Terraform Modules
+## Terraform Modules
 
 ### Networking Module (`modules/networking`)
 
@@ -251,7 +251,7 @@ Manages CloudWatch resources.
 - `log_group_names`: CloudWatch log groups
 - `dashboard_url`: CloudWatch dashboard URL
 
-## 🚀 Deployment
+## Deployment
 
 ### Automated Deployment via GitHub Actions
 
@@ -300,7 +300,7 @@ terraform destroy -var-file=terraform.tfvars
 ./scripts/deploy-infrastructure.sh output
 ```
 
-## 📊 Monitoring
+## Monitoring
 
 ### CloudWatch Dashboard
 
@@ -352,7 +352,7 @@ fields @timestamp, @duration, status_code
 | stats count() as error_count by bin(5m)
 ```
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Terraform State Issues
 
@@ -421,7 +421,7 @@ aws cloudwatch describe-alarms --region us-east-1
 aws cloudwatch get-dashboard --dashboard-name StartTechDashboard
 ```
 
-## 📝 Variables Configuration
+## Variables Configuration
 
 Create `terraform.tfvars` from `terraform.tfvars.example`:
 
@@ -446,7 +446,7 @@ log_retention_days      = 7
 alarm_email             = "ops@starttech.com"
 ```
 
-## 🔐 Security Considerations
+## Security Considerations
 
 - **State File**: Store Terraform state remotely in S3 with encryption
 - **Access Control**: Use IAM roles and policies for least privilege
@@ -455,23 +455,15 @@ alarm_email             = "ops@starttech.com"
 - **Logging**: Enable CloudTrail and CloudWatch Logs
 - **Encryption**: Enable encryption at rest and in transit
 
-## 🤝 Contributing
 
-1. Create a feature branch
-2. Make changes to Terraform modules
-3. Test with `terraform plan`
-4. Submit pull request
-5. Review and merge to main
-6. Deployment is automatic via GitHub Actions
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
 - [AWS Architecture Guide](https://docs.aws.amazon.com/architecture/)
 - [Terraform Best Practices](https://www.terraform.io/docs/cloud/guides/recommended-practices/index.html)
 - [CloudWatch Documentation](https://docs.aws.amazon.com/cloudwatch/)
 
-## 📞 Support
+## Support
 
 For issues or questions:
 1. Check the Troubleshooting section above
@@ -481,6 +473,6 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2024  
+**Last Updated**: 2026  
 **Terraform Version**: 1.0+  
 **AWS Region**: us-east-1 (configurable)

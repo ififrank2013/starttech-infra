@@ -3,11 +3,12 @@
 *.tfstate.*
 *.tfvars
 *.tfvars.json
-!terraform.tfvars.example
+!terraform.tfvars
 .terraform/
 .terraform.lock.hcl
 .terraformrc
 terraform.rc
+terraform/terraform.tfvars
 
 # OS
 .DS_Store

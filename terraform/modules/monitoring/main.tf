@@ -57,11 +57,6 @@ resource "aws_elasticache_cluster" "redis" {
   subnet_group_name    = aws_elasticache_subnet_group.redis.name
   security_group_ids   = [var.redis_security_group_id]
 
-  automatic_failover_enabled = false
-  at_rest_encryption_enabled = true
-  transit_encryption_enabled = true
-  auth_token                 = var.redis_auth_token
-
   tags = {
     Name = "${var.environment}-redis"
   }

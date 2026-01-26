@@ -26,7 +26,7 @@ systemctl start awslogsd
 systemctl enable awslogsd
 
 # Pull and run Docker image
-aws ecr get-login-password --region ${AWS_REGION:-us-east-1} | docker login --username AWS --password-stdin $(echo ${docker_image} | cut -d'/' -f1)
+aws ecr get-login-password --region $${AWS_REGION:-us-east-1} | docker login --username AWS --password-stdin $(echo ${docker_image} | cut -d'/' -f1)
 docker pull ${docker_image}
 docker run -d \
   --name backend \

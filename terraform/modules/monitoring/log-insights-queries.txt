@@ -1,0 +1,23 @@
+# Backend Application Errors
+fields @timestamp, @message, @logStream
+| filter @message like /ERROR/
+| stats count() by @logStream
+
+# Request latency
+fields @timestamp, @duration
+| filter ispresent(@duration)
+| stats avg(@duration), max(@duration), pct(@duration, 95)
+
+# Failed health checks
+fields @timestamp, @message
+| filter @message like /health/ and @message like /failed/
+| stats count() by @logStream
+
+# Database connection issues
+fields @timestamp, @message
+| filter @message like /mongo/ or @message like /database/
+| stats count() by @message
+
+# Redis cache hits/misses
+fields @timestamp, cacheHit
+| stats sum(cacheHit) as hits, sum(!cacheHit) as misses
