@@ -78,10 +78,15 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ${{ env.AWS_REGION }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_REGION
+          aws configure set output json
 
       - name: Initialize Terraform
         working-directory: terraform
@@ -91,8 +96,6 @@ jobs:
         working-directory: terraform
         run: |
           cp terraform.tfvars.example terraform.tfvars
-          sed -i 's|YOUR_ECR_REPOSITORY_URL|${{ secrets.ECR_REPOSITORY_URL }}|g' terraform.tfvars
-          sed -i 's|YourSecureRedisToken|${{ secrets.REDIS_AUTH_TOKEN }}|g' terraform.tfvars
 
       - name: Terraform plan
         id: plan
@@ -128,10 +131,15 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ${{ env.AWS_REGION }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_REGION
+          aws configure set output json
 
       - name: Initialize Terraform
         working-directory: terraform
@@ -141,8 +149,6 @@ jobs:
         working-directory: terraform
         run: |
           cp terraform.tfvars.example terraform.tfvars
-          sed -i 's|YOUR_ECR_REPOSITORY_URL|${{ secrets.ECR_REPOSITORY_URL }}|g' terraform.tfvars
-          sed -i 's|YourSecureRedisToken|${{ secrets.REDIS_AUTH_TOKEN }}|g' terraform.tfvars
 
       - name: Terraform apply
         working-directory: terraform
@@ -169,7 +175,7 @@ jobs:
           EOF
 
       - name: Upload infrastructure outputs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: infrastructure-outputs
           path: infrastructure-outputs.json
