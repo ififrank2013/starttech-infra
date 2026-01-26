@@ -19,8 +19,8 @@ resource "aws_cloudwatch_log_group" "alb" {
 
 # Enable ALB logging to S3
 resource "aws_s3_bucket" "alb_logs" {
-  bucket              = "${var.environment}-alb-logs-${data.aws_caller_identity.current.account_id}"
-  force_destroy       = true
+  bucket        = "${var.environment}-alb-logs-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
 
   tags = {
     Name = "${var.environment}-alb-logs"
@@ -90,9 +90,9 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type = "log"
         properties = {
-          query   = "fields @timestamp, @message | stats count() by @logStream"
-          region  = var.aws_region
-          title   = "Backend Logs"
+          query  = "fields @timestamp, @message | stats count() by @logStream"
+          region = var.aws_region
+          title  = "Backend Logs"
         }
       }
     ]
