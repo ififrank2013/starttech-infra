@@ -28,14 +28,14 @@ This infrastructure-as-code repository enables:
 
 ### Key Features
 
-✅ Modular Terraform design for reusability  
-✅ Multi-AZ deployment for fault tolerance  
-✅ Auto-scaling based on CPU utilization  
-✅ CloudWatch dashboards and alarms  
-✅ Security groups and IAM roles  
-✅ CloudFront CDN for static assets  
-✅ Automated health checks  
-✅ Zero-downtime deployments  
+Modular Terraform design for reusability  
+Multi-AZ deployment for fault tolerance  
+Auto-scaling based on CPU utilization  
+CloudWatch dashboards and alarms  
+Security groups and IAM roles  
+CloudFront CDN for static assets  
+Automated health checks  
+Zero-downtime deployments  
 
 ## Architecture
 
