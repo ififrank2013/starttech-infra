@@ -40,6 +40,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
       - name: Terraform format check
         run: terraform fmt -check -recursive terraform/
@@ -129,6 +130,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
       - name: Configure AWS credentials
         env:
@@ -179,21 +181,3 @@ jobs:
         with:
           name: infrastructure-outputs
           path: infrastructure-outputs.json
-
-      - name: Send notification
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
-          payload: |
-            {
-              "text": "Infrastructure deployment ${{ job.status }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Infrastructure Deployment* ${{ job.status }}\n*ALB DNS:* ${{ steps.outputs.outputs.alb_dns }}\n*CloudFront:* ${{ steps.outputs.outputs.cloudfront_domain }}"
-                  }
-                }
-              ]
-            }
