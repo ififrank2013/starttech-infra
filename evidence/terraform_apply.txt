@@ -1,0 +1,302 @@
+(base) ififrank@Frank-Laptop:/mnt/c/Users/olivc/OneDrive/Documents/altschool-barakat-cohort/third-semester/assignments/assessment_3/starttech-infra/terraform$ terraform apply
+Acquiring state lock. This may take a few moments...
+data.aws_availability_zones.available: Reading...
+module.networking.aws_vpc.main: Refreshing state... [id=vpc-050b7a1b378410470]
+data.aws_availability_zones.available: Read complete after 2s [id=us-east-1]
+module.networking.aws_security_group.alb: Refreshing state... [id=sg-019555811e647fd34]
+module.networking.aws_internet_gateway.main: Refreshing state... [id=igw-0bf409854ba3863f2]
+module.networking.aws_subnet.public[3]: Refreshing state... [id=subnet-048608a8ddf4ac9fc]
+module.networking.aws_subnet.public[5]: Refreshing state... [id=subnet-0bc6632810ff9b831]
+module.networking.aws_subnet.public[2]: Refreshing state... [id=subnet-0b098826eb574898f]
+module.networking.aws_subnet.public[1]: Refreshing state... [id=subnet-0a59317eeb9220416]
+module.networking.aws_subnet.public[4]: Refreshing state... [id=subnet-0560e2e7ba620a1c4]
+module.networking.aws_subnet.private[1]: Refreshing state... [id=subnet-0a36e024c1d8cf39a]
+module.networking.aws_subnet.public[0]: Refreshing state... [id=subnet-093c3c36beaff28a7]
+module.networking.aws_subnet.private[2]: Refreshing state... [id=subnet-0ce7c37c4529b043b]
+module.networking.aws_subnet.private[3]: Refreshing state... [id=subnet-09052322c892b149a]
+module.networking.aws_subnet.private[4]: Refreshing state... [id=subnet-031082a1bb98073aa]
+module.networking.aws_subnet.private[5]: Refreshing state... [id=subnet-0e532d653f552e440]
+module.networking.aws_subnet.private[0]: Refreshing state... [id=subnet-01759cc3dce1dac59]
+module.networking.aws_security_group.backend: Refreshing state... [id=sg-0aa7cfa99fdd57129]
+module.networking.aws_route_table.public: Refreshing state... [id=rtb-0c7929f0ee1fc8f5c]
+module.networking.aws_eip.nat[2]: Refreshing state... [id=eipalloc-0982c879b73b6797a]
+module.networking.aws_eip.nat[1]: Refreshing state... [id=eipalloc-05ddbc13bff0bc467]
+module.networking.aws_eip.nat[4]: Refreshing state... [id=eipalloc-0fe2899b83944808c]
+module.networking.aws_eip.nat[3]: Refreshing state... [id=eipalloc-09c616ee444913a98]
+module.networking.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0e547699bcda022ed]
+module.networking.aws_eip.nat[5]: Refreshing state... [id=eipalloc-0b553d83ecaee5ef4]
+module.networking.aws_security_group.redis: Refreshing state... [id=sg-09b6d30ea30a5a601]
+module.networking.aws_security_group.mongodb: Refreshing state... [id=sg-041d6f2699ac707e1]
+module.networking.aws_route_table_association.public[4]: Refreshing state... [id=rtbassoc-05f876c3deacce23d]
+module.networking.aws_route_table_association.public[3]: Refreshing state... [id=rtbassoc-09d1f2d8cfedde51f]
+module.networking.aws_route_table_association.public[1]: Refreshing state... [id=rtbassoc-061fa9f007fd51d0c]
+module.networking.aws_route_table_association.public[5]: Refreshing state... [id=rtbassoc-021920166ed82d9db]
+module.networking.aws_route_table_association.public[0]: Refreshing state... [id=rtbassoc-0c545e04464b24c9c]
+module.networking.aws_route_table_association.public[2]: Refreshing state... [id=rtbassoc-028d96c1d480815d2]
+module.networking.aws_nat_gateway.main[5]: Refreshing state... [id=nat-0cbde00062bdfa2cd]
+module.networking.aws_nat_gateway.main[3]: Refreshing state... [id=nat-0e6e3039206ee68f2]
+module.networking.aws_nat_gateway.main[2]: Refreshing state... [id=nat-04a80b2df027165f9]
+module.networking.aws_nat_gateway.main[0]: Refreshing state... [id=nat-0d55f50db5532a3a9]
+module.networking.aws_nat_gateway.main[1]: Refreshing state... [id=nat-07fc7128d7b7f19de]
+module.networking.aws_nat_gateway.main[4]: Refreshing state... [id=nat-0fd790e8949b32779]
+module.networking.aws_route_table.private[1]: Refreshing state... [id=rtb-08ca60f7299b959b4]
+module.networking.aws_route_table.private[4]: Refreshing state... [id=rtb-05a200f928327a644]
+module.networking.aws_route_table.private[3]: Refreshing state... [id=rtb-019d94e5b97f97f14]
+module.networking.aws_route_table.private[2]: Refreshing state... [id=rtb-06d1165a012a7790b]
+module.networking.aws_route_table.private[0]: Refreshing state... [id=rtb-06f0157654ab33434]
+module.networking.aws_route_table.private[5]: Refreshing state... [id=rtb-0d1671eecdf0ee589]
+module.networking.aws_route_table_association.private[3]: Refreshing state... [id=rtbassoc-0b08394b419ceec86]
+module.networking.aws_route_table_association.private[5]: Refreshing state... [id=rtbassoc-0ec3823bb21548c94]
+module.networking.aws_route_table_association.private[2]: Refreshing state... [id=rtbassoc-0e1101c75663ef086]
+module.networking.aws_route_table_association.private[4]: Refreshing state... [id=rtbassoc-0b7a3d0502d33bdfb]
+module.networking.aws_route_table_association.private[1]: Refreshing state... [id=rtbassoc-09f8b1679ac121e55]
+module.networking.aws_route_table_association.private[0]: Refreshing state... [id=rtbassoc-07652230ad1bfa3d1]
+module.compute.aws_iam_policy.ecr_policy: Refreshing state... [id=arn:aws:iam::197104194412:policy/prod-ecr-policy]
+module.compute.aws_iam_policy.cloudwatch_policy: Refreshing state... [id=arn:aws:iam::197104194412:policy/prod-cloudwatch-policy]
+module.monitoring.aws_cloudwatch_dashboard.main: Refreshing state... [id=prod-dashboard]
+module.monitoring.aws_cloudwatch_log_group.backend: Refreshing state... [id=/aws/ec2/prod/backend]
+module.compute.data.aws_ami.amazon_linux_2: Reading...
+module.monitoring.aws_cloudwatch_metric_alarm.alb_unhealthy_hosts: Refreshing state... [id=prod-alb-unhealthy-hosts]
+module.compute.aws_lb_target_group.backend: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:197104194412:targetgroup/prod-backend-tg/0b05520432b6d22b]
+module.compute.aws_lb.main: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:197104194412:loadbalancer/app/prod-alb/3cb550b07e852336]
+module.monitoring.data.aws_region.current: Reading...
+module.monitoring.data.aws_region.current: Read complete after 0s [id=us-east-1]
+module.storage.aws_cloudfront_origin_access_identity.frontend: Refreshing state... [id=E1F9QUB2ORP89U]
+module.monitoring.aws_cloudwatch_log_group.alb: Refreshing state... [id=/aws/alb/prod]
+module.compute.data.aws_ami.amazon_linux_2: Read complete after 1s [id=ami-026992d753d5622bc]
+module.storage.data.aws_caller_identity.current: Reading...
+module.storage.data.aws_caller_identity.current: Read complete after 0s [id=197104194412]
+module.compute.aws_iam_role.ec2_role: Refreshing state... [id=prod-ec2-role]
+module.storage.aws_ecr_repository.backend: Refreshing state... [id=prod-backend]
+module.monitoring.data.aws_caller_identity.current: Reading...
+module.monitoring.aws_elasticache_subnet_group.redis: Refreshing state... [id=prod-redis-subnet-group]
+module.storage.aws_s3_bucket.frontend: Refreshing state... [id=prod-frontend-197104194412]
+module.monitoring.data.aws_caller_identity.current: Read complete after 0s [id=197104194412]
+module.monitoring.aws_s3_bucket.alb_logs: Refreshing state... [id=prod-alb-logs-197104194412]
+module.compute.aws_iam_role_policy_attachment.ecr_attach: Refreshing state... [id=prod-ec2-role-20260126220739925700000010]
+module.compute.aws_iam_role_policy_attachment.cloudwatch_attach: Refreshing state... [id=prod-ec2-role-2026012622073968930000000f]
+module.compute.aws_iam_instance_profile.ec2_profile: Refreshing state... [id=prod-ec2-profile]
+module.compute.aws_lb_listener.backend: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:197104194412:listener/app/prod-alb/3cb550b07e852336/6e371d4de3309a91]
+module.compute.aws_launch_template.backend: Refreshing state... [id=lt-08159d68444fb5d64]
+module.storage.aws_ecr_lifecycle_policy.backend: Refreshing state... [id=prod-backend]
+module.monitoring.aws_elasticache_cluster.redis: Refreshing state... [id=prod-redis]
+module.monitoring.aws_cloudwatch_metric_alarm.redis_evictions: Refreshing state... [id=prod-redis-evictions]
+module.storage.aws_s3_bucket_public_access_block.frontend: Refreshing state... [id=prod-frontend-197104194412]
+module.monitoring.aws_s3_bucket_public_access_block.alb_logs: Refreshing state... [id=prod-alb-logs-197104194412]
+module.storage.aws_s3_bucket_versioning.frontend: Refreshing state... [id=prod-frontend-197104194412]
+module.storage.aws_s3_bucket_policy.frontend: Refreshing state... [id=prod-frontend-197104194412]
+module.storage.aws_s3_bucket_website_configuration.frontend: Refreshing state... [id=prod-frontend-197104194412]
+module.storage.aws_cloudfront_distribution.frontend: Refreshing state... [id=E2E3XA2QGW051S]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following      
+symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # module.compute.aws_autoscaling_group.backend will be created
+  + resource "aws_autoscaling_group" "backend" {
+      + arn                              = (known after apply)
+      + availability_zones               = (known after apply)
+      + default_cooldown                 = (known after apply)
+      + desired_capacity                 = 2
+      + force_delete                     = false
+      + force_delete_warm_pool           = false
+      + health_check_grace_period        = 300
+      + health_check_type                = "ELB"
+      + id                               = (known after apply)
+      + ignore_failed_scaling_activities = false
+      + load_balancers                   = (known after apply)
+      + max_size                         = 4
+      + metrics_granularity              = "1Minute"
+      + min_size                         = 1
+      + name                             = (known after apply)
+      + name_prefix                      = "prod-backend-asg-"
+      + predicted_capacity               = (known after apply)
+      + protect_from_scale_in            = false
+      + service_linked_role_arn          = (known after apply)
+      + target_group_arns                = [
+          + "arn:aws:elasticloadbalancing:us-east-1:197104194412:targetgroup/prod-backend-tg/0b05520432b6d22b",
+        ]
+      + vpc_zone_identifier              = [
+          + "subnet-01759cc3dce1dac59",
+          + "subnet-031082a1bb98073aa",
+          + "subnet-09052322c892b149a",
+          + "subnet-0a36e024c1d8cf39a",
+          + "subnet-0ce7c37c4529b043b",
+          + "subnet-0e532d653f552e440",
+        ]
+      + wait_for_capacity_timeout        = "10m"
+      + warm_pool_size                   = (known after apply)
+
+      + availability_zone_distribution (known after apply)
+
+      + capacity_reservation_specification (known after apply)
+
+      + launch_template {
+          + id      = "lt-08159d68444fb5d64"
+          + name    = (known after apply)
+          + version = "$Latest"
+        }
+
+      + mixed_instances_policy (known after apply)
+
+      + tag {
+          + key                 = "Name"
+          + propagate_at_launch = true
+          + value               = "prod-backend-asg"
+        }
+
+      + traffic_source (known after apply)
+    }
+
+  # module.compute.aws_autoscaling_policy.scale_down will be created
+  + resource "aws_autoscaling_policy" "scale_down" {
+      + adjustment_type         = "ChangeInCapacity"
+      + arn                     = (known after apply)
+      + autoscaling_group_name  = (known after apply)
+      + cooldown                = 300
+      + enabled                 = true
+      + id                      = (known after apply)
+      + metric_aggregation_type = (known after apply)
+      + name                    = "prod-scale-down"
+      + policy_type             = "SimpleScaling"
+      + scaling_adjustment      = -1
+    }
+
+  # module.compute.aws_autoscaling_policy.scale_up will be created
+  + resource "aws_autoscaling_policy" "scale_up" {
+      + adjustment_type         = "ChangeInCapacity"
+      + arn                     = (known after apply)
+      + autoscaling_group_name  = (known after apply)
+      + cooldown                = 300
+      + enabled                 = true
+      + id                      = (known after apply)
+      + metric_aggregation_type = (known after apply)
+      + name                    = "prod-scale-up"
+      + policy_type             = "SimpleScaling"
+      + scaling_adjustment      = 1
+    }
+
+  # module.compute.aws_cloudwatch_metric_alarm.cpu_high will be created
+  + resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+      + actions_enabled                       = true
+      + alarm_actions                         = (known after apply)
+      + alarm_name                            = "prod-cpu-high"
+      + arn                                   = (known after apply)
+      + comparison_operator                   = "GreaterThanThreshold"
+      + dimensions                            = (known after apply)
+      + evaluate_low_sample_count_percentiles = (known after apply)
+      + evaluation_periods                    = 2
+      + id                                    = (known after apply)
+      + metric_name                           = "CPUUtilization"
+      + namespace                             = "AWS/EC2"
+      + period                                = 300
+      + statistic                             = "Average"
+      + tags_all                              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Project"     = "StartTech"
+        }
+      + threshold                             = 70
+      + treat_missing_data                    = "missing"
+    }
+
+  # module.compute.aws_cloudwatch_metric_alarm.cpu_low will be created
+  + resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+      + actions_enabled                       = true
+      + alarm_actions                         = (known after apply)
+      + alarm_name                            = "prod-cpu-low"
+      + arn                                   = (known after apply)
+      + comparison_operator                   = "LessThanThreshold"
+      + dimensions                            = (known after apply)
+      + evaluate_low_sample_count_percentiles = (known after apply)
+      + evaluation_periods                    = 2
+      + id                                    = (known after apply)
+      + metric_name                           = "CPUUtilization"
+      + namespace                             = "AWS/EC2"
+      + period                                = 300
+      + statistic                             = "Average"
+      + tags_all                              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Project"     = "StartTech"
+        }
+      + threshold                             = 30
+      + treat_missing_data                    = "missing"
+    }
+
+  # module.monitoring.local_file.log_insights_queries will be created
+  + resource "local_file" "log_insights_queries" {
+      + content              = <<-EOT
+            # Backend Application Errors
+            fields @timestamp, @message, @logStream
+            | filter @message like /ERROR/
+            | stats count() by @logStream
+
+            # Request latency
+            fields @timestamp, @duration
+            | filter ispresent(@duration)
+            | stats avg(@duration), max(@duration), pct(@duration, 95)
+
+            # Failed health checks
+            fields @timestamp, @message
+            | filter @message like /health/ and @message like /failed/
+            | stats count() by @logStream
+
+            # Database connection issues
+            fields @timestamp, @message
+            | filter @message like /mongo/ or @message like /database/
+            | stats count() by @message
+
+            # Redis cache hits/misses
+            fields @timestamp, cacheHit
+            | stats sum(cacheHit) as hits, sum(!cacheHit) as misses
+        EOT
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + directory_permission = "0777"
+      + file_permission      = "0777"
+      + filename             = "modules/monitoring/log-insights-queries.txt"
+      + id                   = (known after apply)
+    }
+
+Plan: 6 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+module.monitoring.local_file.log_insights_queries: Creating...
+module.monitoring.local_file.log_insights_queries: Creation complete after 0s [id=de0f83faea7425e35ad8a477ea0977955e3e2c0b]
+module.compute.aws_autoscaling_group.backend: Creating...
+module.compute.aws_autoscaling_group.backend: Still creating... [00m10s elapsed]
+module.compute.aws_autoscaling_group.backend: Creation complete after 13s [id=prod-backend-asg-20260127103402584900000001]
+module.compute.aws_autoscaling_policy.scale_down: Creating...
+module.compute.aws_autoscaling_policy.scale_up: Creating...
+module.compute.aws_autoscaling_policy.scale_down: Creation complete after 2s [id=prod-scale-down]
+module.compute.aws_cloudwatch_metric_alarm.cpu_low: Creating...
+module.compute.aws_autoscaling_policy.scale_up: Creation complete after 2s [id=prod-scale-up]
+module.compute.aws_cloudwatch_metric_alarm.cpu_high: Creating...
+module.compute.aws_cloudwatch_metric_alarm.cpu_low: Creation complete after 1s [id=prod-cpu-low]
+module.compute.aws_cloudwatch_metric_alarm.cpu_high: Creation complete after 1s [id=prod-cpu-high]
+Releasing state lock. This may take a few moments...
+
+Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+backend_log_group = "/aws/ec2/prod/backend"
+cloudfront_distribution_id = "E2E3XA2QGW051S"
+cloudfront_domain_name = "d22r27pmlhadif.cloudfront.net"
+dashboard_url = "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=prod-dashboard"
+ecr_repository_url = "197104194412.dkr.ecr.us-east-1.amazonaws.com/prod-backend"
+load_balancer_dns = "prod-alb-882874161.us-east-1.elb.amazonaws.com"
+redis_endpoint = "prod-redis.lhjqpc.0001.use1.cache.amazonaws.com"
+s3_bucket_name = "prod-frontend-197104194412"
