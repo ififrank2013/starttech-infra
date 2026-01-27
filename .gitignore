@@ -38,6 +38,7 @@ temp/
 # AWS
 credentials
 .aws/
+evidence/AWS_CREDENTIALS_FOR_REVIEW.txt
 
 # Environment
 .env
