@@ -46,7 +46,7 @@ docker run -d \
   -e JWT_EXPIRATION_HOURS=72 \
   -e DB_NAME=muchtoodb \
   -e MONGO_URI="${mongo_uri}" \
-  -e REDIS_HOST=prod-redis.tsxflb.ng.0001.use1.cache.amazonaws.com \
+  -e REDIS_HOST="${redis_endpoint}" \
   -e REDIS_PORT=6379 \
   -e ENABLE_CACHE=true \
   -e ALLOWED_ORIGINS="https://d22r27pmlhadif.cloudfront.net,https://d22r27pmlhadif.cloudfront.net/" \

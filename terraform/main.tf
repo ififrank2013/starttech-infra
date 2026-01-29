@@ -55,8 +55,9 @@ module "compute" {
   docker_image              = var.docker_image
   log_group_name            = module.monitoring.backend_log_group
   mongo_uri                 = var.mongo_uri
+  redis_endpoint            = module.monitoring.redis_endpoint
 
-  depends_on = [module.networking]
+  depends_on = [module.networking, module.monitoring]
 }
 
 # Storage Module (S3, CloudFront, ECR)

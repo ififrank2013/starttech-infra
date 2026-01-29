@@ -144,6 +144,12 @@ resource "aws_cloudfront_distribution" "frontend" {
     Name = "${var.environment}-cloudfront"
   }
 
+  lifecycle {
+    # Ignore origin changes related to S3 bucket recreation
+    # to avoid "Provider produced inconsistent final plan" errors
+    ignore_changes = [origin]
+  }
+
   # Note: CloudFront origins use set which requires explicit handling
   # We rely on ordered_cache_behavior path routing to handle updates
   # If S3 domain changes, run: terraform apply with updated bucket reference

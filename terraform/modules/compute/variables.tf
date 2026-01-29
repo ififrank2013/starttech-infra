@@ -67,3 +67,8 @@ variable "mongo_uri" {
   sensitive   = true
   default     = ""
 }
+
+variable "redis_endpoint" {
+  description = "Redis endpoint address"
+  type        = string
+}
