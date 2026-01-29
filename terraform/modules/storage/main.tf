@@ -139,14 +139,14 @@ resource "aws_cloudfront_distribution" "frontend" {
     Name = "${var.environment}-cloudfront"
   }
 
-  lifecycle {
-    create_before_destroy = true
-    # Ignore S3 origin domain changes to prevent provider inconsistency
-    # The CloudFront will use the S3 bucket domain as updated
-    ignore_changes = [
-      origin
-    ]
-  }
+  # Note: CloudFront origins use set which requires explicit handling
+  # We rely on ordered_cache_behavior path routing to handle updates
+  # If S3 domain changes, run: terraform apply with updated bucket reference
+  depends_on = [
+    aws_s3_bucket.frontend,
+    aws_s3_bucket_policy.frontend,
+    aws_s3_bucket_website_configuration.frontend
+  ]
 }
 
 # ECR Repository for backend
