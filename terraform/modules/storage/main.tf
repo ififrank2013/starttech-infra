@@ -1,6 +1,7 @@
 # S3 bucket for frontend
 resource "aws_s3_bucket" "frontend" {
-  bucket = "${var.environment}-frontend-${data.aws_caller_identity.current.account_id}"
+  bucket        = "${var.environment}-frontend-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
 
   tags = {
     Name = "${var.environment}-frontend"
@@ -88,7 +89,7 @@ resource "aws_cloudfront_distribution" "frontend" {
 
   # S3 Origin for frontend static files (defined second for stable ordering)
   origin {
-    domain_name = "${aws_s3_bucket.frontend.bucket}.s3.${data.aws_region.current.name}.amazonaws.com"
+    domain_name = "${var.environment}-frontend-${data.aws_caller_identity.current.account_id}.s3.us-east-1.amazonaws.com"
     origin_id   = "myS3Origin"
 
     s3_origin_config {
