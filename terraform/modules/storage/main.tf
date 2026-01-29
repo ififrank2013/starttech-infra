@@ -114,9 +114,6 @@ resource "aws_cloudfront_distribution" "frontend" {
 
     viewer_protocol_policy = "https-only"
     compress               = true
-    
-    # Use origin_path on the ALB origin above to strip /api prefix
-    # CloudFront will strip /api and forward the rest to the ALB
   }
 
   default_cache_behavior {
