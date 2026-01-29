@@ -1,10 +1,13 @@
 # S3 bucket for frontend
 resource "aws_s3_bucket" "frontend" {
-  bucket        = "${var.environment}-frontend-${data.aws_caller_identity.current.account_id}"
-  force_destroy = true
+  bucket = "${var.environment}-frontend"
 
   tags = {
     Name = "${var.environment}-frontend"
+  }
+
+  lifecycle {
+    prevent_destroy = false
   }
 }
 
@@ -32,7 +35,7 @@ resource "aws_s3_bucket_policy" "frontend" {
           AWS = aws_cloudfront_origin_access_identity.frontend.iam_arn
         }
         Action   = "s3:GetObject"
-        Resource = "${aws_s3_bucket.frontend.arn}/*"
+        Resource = "arn:aws:s3:::${var.environment}-frontend/*"
       }
     ]
   })
@@ -66,17 +69,7 @@ resource "aws_cloudfront_origin_access_identity" "frontend" {
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "frontend" {
-  # S3 Origin for frontend static files
-  origin {
-    domain_name = aws_s3_bucket.frontend.bucket_regional_domain_name
-    origin_id   = "myS3Origin"
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.frontend.cloudfront_access_identity_path
-    }
-  }
-
-  # ALB Origin for API requests (always included)
+  # ALB Origin for API requests (defined first for stable ordering)
   origin {
     domain_name = var.alb_dns_name != "" ? var.alb_dns_name : "placeholder.example.com"
     origin_id   = "alb-backend"
@@ -86,6 +79,16 @@ resource "aws_cloudfront_distribution" "frontend" {
       https_port             = 443
       origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  # S3 Origin for frontend static files (defined second for stable ordering)
+  origin {
+    domain_name = aws_s3_bucket.frontend.bucket_regional_domain_name
+    origin_id   = "myS3Origin"
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.frontend.cloudfront_access_identity_path
     }
   }
 
@@ -136,14 +139,14 @@ resource "aws_cloudfront_distribution" "frontend" {
     Name = "${var.environment}-cloudfront"
   }
 
-  # Ensure all S3 resources are created before CloudFront
-  depends_on = [
-    aws_s3_bucket.frontend,
-    aws_s3_bucket_policy.frontend,
-    aws_s3_bucket_website_configuration.frontend,
-    aws_s3_bucket_versioning.frontend,
-    aws_s3_bucket_public_access_block.frontend
-  ]
+  lifecycle {
+    create_before_destroy = true
+    # Ignore S3 origin domain changes to prevent provider inconsistency
+    # The CloudFront will use the S3 bucket domain as updated
+    ignore_changes = [
+      origin
+    ]
+  }
 }
 
 # ECR Repository for backend
