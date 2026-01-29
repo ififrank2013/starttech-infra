@@ -54,6 +54,7 @@ module "compute" {
   asg_desired_capacity      = var.asg_desired_capacity
   docker_image              = var.docker_image
   log_group_name            = module.monitoring.backend_log_group
+  mongo_uri                 = var.mongo_uri
 
   depends_on = [module.networking]
 }
@@ -62,9 +63,10 @@ module "compute" {
 module "storage" {
   source = "./modules/storage"
 
-  environment = var.environment
+  environment  = var.environment
+  alb_dns_name = module.compute.load_balancer_dns
 
-  depends_on = [module.networking]
+  depends_on = [module.networking, module.compute]
 }
 
 # Monitoring Module (CloudWatch, ElastiCache, Alarms)

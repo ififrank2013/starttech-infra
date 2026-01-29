@@ -143,6 +143,7 @@ resource "aws_launch_template" "backend" {
     environment     = var.environment
     log_group       = var.log_group_name
     cloudwatch_role = var.environment
+    mongo_uri       = var.mongo_uri
   }))
 
   monitoring {

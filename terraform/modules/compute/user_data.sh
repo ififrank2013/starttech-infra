@@ -28,9 +28,12 @@ systemctl enable awslogsd
 # Pull and run Docker image
 aws ecr get-login-password --region $${AWS_REGION:-us-east-1} | docker login --username AWS --password-stdin $(echo ${docker_image} | cut -d'/' -f1)
 docker pull ${docker_image}
+
 docker run -d \
   --name backend \
   -p 8080:8080 \
   --restart always \
-  -e ENVIRONMENT=${environment} \
+  -e ENVIRONMENT=prod \
+  -e DB_NAME=muchtoodb \
+  -e MONGO_URI="mongodb+srv://ififrank4real_db_user:6lHXBjpNuSHSgyYu@cluster1.ddifwnk.mongodb.net/muchtoodb?retryWrites=true&w=majority" \
   ${docker_image}

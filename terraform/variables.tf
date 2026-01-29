@@ -70,3 +70,9 @@ variable "redis_auth_token" {
   sensitive   = true
   default     = "MySecureRedisToken123!"
 }
+variable "mongo_uri" {
+  description = "MongoDB connection URI"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

@@ -61,3 +61,9 @@ variable "log_group_name" {
   description = "CloudWatch log group name"
   type        = string
 }
+variable "mongo_uri" {
+  description = "MongoDB connection URI"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
