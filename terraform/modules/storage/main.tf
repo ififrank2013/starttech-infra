@@ -67,6 +67,9 @@ resource "aws_cloudfront_origin_access_identity" "frontend" {
   comment = "${var.environment}-oai"
 }
 
+# Get current AWS region
+data "aws_region" "current" {}
+
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "frontend" {
   # ALB Origin for API requests (defined first for stable ordering)
@@ -84,7 +87,7 @@ resource "aws_cloudfront_distribution" "frontend" {
 
   # S3 Origin for frontend static files (defined second for stable ordering)
   origin {
-    domain_name = aws_s3_bucket.frontend.bucket_regional_domain_name
+    domain_name = "${aws_s3_bucket.frontend.bucket}.s3.${data.aws_region.current.name}.amazonaws.com"
     origin_id   = "myS3Origin"
 
     s3_origin_config {

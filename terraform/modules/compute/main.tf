@@ -169,6 +169,7 @@ resource "aws_autoscaling_group" "backend" {
   target_group_arns         = [aws_lb_target_group.backend.arn]
   health_check_type         = "ELB"
   health_check_grace_period = 300
+  wait_for_capacity_timeout = "0"
 
   min_size         = var.asg_min_size
   max_size         = var.asg_max_size
