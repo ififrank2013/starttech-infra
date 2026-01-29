@@ -76,6 +76,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   origin {
     domain_name = var.alb_dns_name != "" ? var.alb_dns_name : "placeholder.example.com"
     origin_id   = "alb-backend"
+    origin_path = "/api"
 
     custom_origin_config {
       http_port              = 80
@@ -113,6 +114,9 @@ resource "aws_cloudfront_distribution" "frontend" {
 
     viewer_protocol_policy = "https-only"
     compress               = true
+    
+    # Use origin_path on the ALB origin above to strip /api prefix
+    # CloudFront will strip /api and forward the rest to the ALB
   }
 
   default_cache_behavior {
