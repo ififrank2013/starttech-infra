@@ -1,6 +1,6 @@
 # S3 bucket for frontend
 resource "aws_s3_bucket" "frontend" {
-  bucket = "${var.environment}-frontend"
+  bucket = "${var.environment}-frontend-${data.aws_caller_identity.current.account_id}"
 
   tags = {
     Name = "${var.environment}-frontend"
@@ -35,7 +35,7 @@ resource "aws_s3_bucket_policy" "frontend" {
           AWS = aws_cloudfront_origin_access_identity.frontend.iam_arn
         }
         Action   = "s3:GetObject"
-        Resource = "arn:aws:s3:::${var.environment}-frontend/*"
+        Resource = "${aws_s3_bucket.frontend.arn}/*"
       }
     ]
   })
