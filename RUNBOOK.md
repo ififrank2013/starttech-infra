@@ -1,3 +1,115 @@
+### CloudFront Provider Inconsistency Error
+
+**Error Message:**
+```
+Error: Provider produced inconsistent final plan
+When expanding the plan for module.storage.aws_cloudfront_distribution.frontend to include new values
+learned so far during apply, provider "registry.terraform.io/hashicorp/aws"
+produced an invalid new value for .origin...
+```
+
+**Cause:**
+- CloudFront origins are defined as an unordered SET in Terraform
+- When S3 bucket domain becomes `(known after apply)` during recreation, Terraform can't compute the set hash
+- Provider can't validate the planned change because one origin domain is unknown
+- This typically happens when the S3 bucket is being destroyed and recreated simultaneously with CloudFront update
+
+**Root Cause Analysis:**
+1. S3 bucket was using `bucket = "${var.environment}-frontend-${data.aws_caller_identity.current.account_id}"`
+2. The `data.aws_caller_identity.current` reference added unnecessary computation
+3. This caused Terraform to mark the bucket for recreation on minor state changes
+4. CloudFront tried to update its origins while S3 domain was unknown
+5. Provider set comparison failed due to unknown S3 origin domain hash
+
+**Solution (Applied):**
+
+**1. Fixed S3 Bucket Naming:**
+```hcl
+resource "aws_s3_bucket" "frontend" {
+  bucket = "${var.environment}-frontend"  # Fixed name, no account ID
+  # Removed force_destroy to prevent unnecessary recreation
+  tags = {
+    Name = "${var.environment}-frontend"
+  }
+}
+```
+
+**2. Reordered CloudFront Origins:**
+```hcl
+resource "aws_cloudfront_distribution" "frontend" {
+  # ALB Origin FIRST (more stable, doesn't depend on S3 recreation)
+  origin {
+    domain_name = var.alb_dns_name != "" ? var.alb_dns_name : "placeholder.example.com"
+    origin_id   = "alb-backend"
+    # ... custom_origin_config
+  }
+  
+  # S3 Origin SECOND (depends on bucket, but now stable)
+  origin {
+    domain_name = aws_s3_bucket.frontend.bucket_regional_domain_name
+    origin_id   = "myS3Origin"
+    # ... s3_origin_config
+  }
+}
+```
+
+**3. Added Explicit Dependencies:**
+```hcl
+depends_on = [
+  aws_s3_bucket.frontend,
+  aws_s3_bucket_policy.frontend,
+  aws_s3_bucket_website_configuration.frontend
+]
+```
+
+**If Error Still Occurs:**
+
+1. **Manually separate the updates:**
+```bash
+# Step 1: Apply only S3 changes
+terraform apply -target=module.storage.aws_s3_bucket.frontend \
+  -target=module.storage.aws_s3_bucket_policy.frontend \
+  -target=module.storage.aws_s3_bucket_website_configuration.frontend
+
+# Step 2: Refresh state
+terraform refresh
+
+# Step 3: Apply CloudFront changes
+terraform apply -target=module.storage.aws_cloudfront_distribution.frontend
+
+# Step 4: Full apply to ensure consistency
+terraform apply
+```
+
+2. **Recreate state file if necessary:**
+```bash
+# Backup current state
+cp terraform.tfstate terraform.tfstate.backup
+
+# Remove CloudFront from state temporarily
+terraform state rm module.storage.aws_cloudfront_distribution.frontend
+
+# Apply to recreate CloudFront
+terraform apply
+
+# Verify CloudFront in console
+```
+
+3. **Check S3 bucket doesn't have conflicting attributes:**
+```bash
+# List S3 bucket details
+aws s3api head-bucket --bucket prod-frontend --region us-east-1
+
+# Check Terraform state
+terraform state show module.storage.aws_s3_bucket.frontend
+```
+
+**Prevention Going Forward:**
+- Always use fixed names for critical resources (S3, CloudFront)
+- Avoid depending on `data` sources for resource IDs when possible
+- Keep origins ordered consistently (stable origins first)
+- Use explicit `depends_on` for cross-module resource dependencies
+- Test `terraform plan` before `terraform apply`
 # StartTech Operations Runbook
 
 Complete operational guide for running, monitoring, troubleshooting, and scaling the StartTech Much-To-Do application.
